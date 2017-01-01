@@ -1,5 +1,6 @@
 package codechef.challenge.dec2016;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
