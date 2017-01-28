@@ -64,6 +64,8 @@ public class CapitalMovementLinearTest {
 		portal[3].add(1);
 		portal[3].add(4);
 		portal[4].add(5);
+		portal[4].add(3);
+		portal[5].add(4);
 		int[] planet = new int[n];
 		planet[1] = 30;
 		planet[2] = 15;
@@ -79,7 +81,7 @@ public class CapitalMovementLinearTest {
 
 	@Test
 	public void testNebInConnWithMax2() {
-		int n = 6;
+		int n = 5;
 		@SuppressWarnings("unchecked")
 		List<Integer>[] portal = new List[n];
 		for (int i = 0; i < portal.length; i++) {
@@ -91,6 +93,7 @@ public class CapitalMovementLinearTest {
 		portal[2].add(1);
 		portal[3].add(1);
 		portal[3].add(4);
+		portal[4].add(3);
 		int[] planet = new int[n];
 		planet[1] = 30;
 		planet[2] = 15;
@@ -100,7 +103,7 @@ public class CapitalMovementLinearTest {
 		for (int i = 1; i < planet.length; i++) {
 			heap.put(planet[i], i);
 		}
-		assertEquals("4 4 2 1 1\n", CapitalMovementLinear.solve(new StringBuilder(), portal, planet, heap).toString());
+		assertEquals("4 4 2 1\n", CapitalMovementLinear.solve(new StringBuilder(), portal, planet, heap).toString());
 	}
 
 	@Test
