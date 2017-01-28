@@ -5,7 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 public class CapitalMovement {
 
@@ -15,11 +21,9 @@ public class CapitalMovement {
 		while (--t >= 0) {
 			CapitalMovement obj = new CapitalMovement();
 			int n = readInt(bis);
-			Planet[] planets = new Planet[n];
+			int[] planets = new int[n];
 			for (int i = 0; i < n; i++) {
-				int population = readInt(bis);
-				Planet planet = new CapitalMovement().new Planet(population, i + 1);
-				planets[i] = planet;
+				planets[i] = readInt(bis);
 			}
 			Integer[][] portal = new Integer[2 * n - 2][2];
 			int k = 0;
@@ -33,7 +37,7 @@ public class CapitalMovement {
 				portal[k][1] = u;
 				k++;
 			}
-			
+
 			System.out.println(solve(portal, planets));
 
 		}
@@ -64,47 +68,54 @@ public class CapitalMovement {
 		return false;
 	}
 
-	public static String solve(Integer[][] portal, Planet[] planets) {
-		
-		Arrays.sort(portal, new Comparator<Integer[]>() {
+	public static String solve(Integer[][] portal, int[] planets) {
+
+		/*Arrays.sort(portal, new Comparator<Integer[]>() {
 			public int compare(Integer[] s1, Integer[] s2) {
 				if (s1[0] == s2[0]) {
 					return s1[1].compareTo(s2[1]);
 				}
 				return s1[0].compareTo(s2[0]);
 			}
-		});
+		});*/
 
 		StringBuilder sb = new StringBuilder();
+		int N = planets.length;
+		PriorityQueue<Integer> heap = new PriorityQueue<Integer>(new Comparator<Integer>() {
 
-		Heap heap = new CapitalMovement().new Heap();
-		heap.buildHeap(planets);
-		int k = 0;
-		List<Integer> invalidPlanets = new ArrayList<Integer>();
-		for (int i = 1; i <= planets.length; i++) {
-			invalidPlanets.clear();
-			invalidPlanets.add(i);
-			while (k < portal.length && portal[k][0] == i) {
-				invalidPlanets.add(portal[k][1]);
-				k++;
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return o2-o1;
 			}
-			int lenIndex = planets.length;
-			if (invalidPlanets.size() == planets.length) {
+			
+		});
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int j = 0; j < N; j++) {
+			heap.offer(planets[j]);
+			map.put(planets[j], j+1);
+		}
+		int k1 = 0, k0 = 0;
+		Set<Integer> backup = new HashSet<Integer>();
+		for (int i = 1; i <= N; i++) {
+
+			backup.clear();
+			heap.remove(planets[i - 1]);
+			while (k1 < portal.length && portal[k1][0] == i) {
+				heap.remove(planets[portal[k1][1] - 1]);
+				k1++;
+			}
+			int lenIndex = N;
+			if (heap.isEmpty()) {
 				sb.append(0);
 			} else {
-				int n = planets.length;
-				for (int j = n - 1; j >= 0; j--) {
-					if (invalidPlanets.remove((Integer) planets[j].index)) {
-						heap.exch(planets, j + 1, lenIndex);
-						heap.sink(planets, j + 1, --lenIndex);
-					}
-				}
-				sb.append(planets[0].index);
+				int n = N;
+				sb.append(map.get(heap.peek()));
 			}
-			if (i != planets.length) {
+			if (i != N) {
 				sb.append(" ");
-				for (int j = lenIndex; j < planets.length; j++) {
-					heap.insert(planets, j);
+				heap.offer(planets[i - 1]);
+				for (int j = k0; j < k1; j++) {
+					heap.offer(planets[portal[j][1] - 1]);
 				}
 			}
 		}
@@ -112,79 +123,5 @@ public class CapitalMovement {
 		return sb.toString();
 
 	}
-
-	class Heap {
-
-		public void buildHeap(Comparable[] pq) {
-			int n = pq.length;
-			for (int k = n / 2; k >= 1; k--)
-				sink(pq, k, n);
-		}
-
-		public void removeRoot(Comparable[] pq, int n) {
-			sink(pq, 1, n);
-		}
-
-		private void sink(Comparable[] pq, int k, int n) {
-			while (2 * k <= n) {
-				int j = 2 * k;
-				if (j < n && less(pq, j, j + 1))
-					j++;
-				if (!less(pq, k, j))
-					break;
-				exch(pq, k, j);
-				k = j;
-			}
-		}
-
-		public void insert(Comparable[] pq, int n) {
-			// pq[n - 1] = elem;
-			int down = n;
-			int top = down / 2;
-			while (top != 0) {
-				if (!less(pq, top, down))
-					break;
-				exch(pq, top, down);
-				down = top;
-				top = down / 2;
-			}
-		}
-
-		private boolean less(Comparable[] pq, int i, int j) {
-			return pq[i - 1].compareTo(pq[j - 1]) < 0;
-		}
-
-		private void exch(Object[] pq, int i, int j) {
-			Object swap = pq[i - 1];
-			pq[i - 1] = pq[j - 1];
-			pq[j - 1] = swap;
-		}
-
-		private boolean less(Comparable v, Comparable w) {
-			return v.compareTo(w) < 0;
-		}
-	}
-
-	class Planet implements Comparable {
-
-		private int population;
-		private int index;
-
-		public Planet(int population, int index) {
-			this.population = population;
-			this.index = index;
-		}
-
-		public int compareTo(Object arg0) {
-			Planet other = (Planet) arg0;
-			return this.population - other.population;
-		}
-
-		@Override
-		public String toString() {
-			return population + " - " + index;
-		}
-	}
-	
 
 }

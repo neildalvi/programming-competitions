@@ -2,11 +2,16 @@ package codechef.challenge.jan2017;
 
 import static org.junit.Assert.*;
 
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.Set;
+
 import org.junit.Test;
 
-public class CapitalMovementTest {
+public class CapitalMovementTest3 {
 
-	@Test
+	/*@Test
 	public void test1Planets() {
 		Integer[][] portal = new Integer[][] {};
 		int[] planets = new int[] { 10 };
@@ -82,19 +87,33 @@ public class CapitalMovementTest {
 		planets = new int[] { 10, 20, 60, 30, 50, 40 };
 		assertEquals("5 3 6 5 4 3", CapitalMovement.solve(portal, planets));
 	}
-	
-	@Test(timeout=30000)
+*/	
+	/*@Test(timeout=40000)
 	public void test5000() {
-		Integer[][] portal = new Integer[100000][2];
-		for (int i = 0,j=2; i < portal.length; i++,j++) {
-			portal[i][0] = 1; portal[i][1] = j;
-			portal[i][0] = j; portal[i][1] = 1;
+	
+		int n = 50000;
+		PriorityQueue<Integer> heap = new PriorityQueue<Integer>(n, new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return o2-o1;
+			}
+		});
+		int[] planet = new int[n+1];
+		for (int i = 1; i <= n; i++) {
+			planet[i] = i+10;
 		}
-		int[] planet = new int[50000];
-		for (int i = 0; i < planet.length; i++) {
-			planet[i] = i + 10;
+		Set<Integer>[] portal = new Set[n+1];
+		for (int i = 0; i <= n; i++) {
+			portal[i] = new HashSet<Integer>();
+			portal[i].add(planet[i]);
 		}
-		CapitalMovement.solve(portal, planet);
+		for (int i = 1; i < n; i++) {
+			int u = n;
+			int v = i;
+			portal[u].add(planet[v]);
+			portal[v].add(planet[u]);
+		}
+		CapitalMovement3.solve(portal, planet, heap);
 	}
-
+*/
 }
