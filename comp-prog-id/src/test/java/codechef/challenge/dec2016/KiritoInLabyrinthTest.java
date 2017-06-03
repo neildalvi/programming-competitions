@@ -84,6 +84,7 @@ public class KiritoInLabyrinthTest {
 		assertEquals(1, new KiritoInLabyrinth().solve(input));
 	}
 
+	@Ignore
 	@Test(timeout = 5000)
 	public void testAllPrimeBig() {
 		int[] input = new int[100000];
